@@ -1,8 +1,14 @@
 package vehicle
 
-import "github.com/gin-gonic/gin"
+import (
+	"brake_signal/service"
 
-func NewRouter(r *gin.Engine) *gin.RouterGroup {
-	g := r.Group("/group/api/v1")
+	"github.com/gin-gonic/gin"
+)
+
+func NewRouter(r *gin.Engine, vehicleService *service.VehicleService) *gin.RouterGroup {
+	handlers := NewHandlers(vehicleService)
+	r.POST("/api/v1/pairs/:vin", handlers.GenerateAddressPairs)
+	g := r.Group("/api/v1")
 	return g
 }

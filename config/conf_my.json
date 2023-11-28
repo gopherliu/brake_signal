@@ -1,0 +1,5 @@
+{
+    "redis_addr":"localhost:6379",
+    "redis_auth":"lvmama",
+    "bind": ":8080"
+}
