@@ -17,9 +17,12 @@ import (
 )
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetReportCaller(true)
+	log.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:03:04",
+	})
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.TraceLevel)
 
 	var confFile string
 	flag.StringVar(&confFile, "c", "", "conf filename")
@@ -45,10 +48,12 @@ func main() {
 		panic(err)
 	}
 	vDB := vehicle.NewRedis(client)
-	svc := service.NewVehicleService(vDB)
-	vehicleController.NewHandlers(svc)
+	v_svc := service.NewVehicleService(vDB)
+	vehicleController.NewHandlers(v_svc)
 
 	r := gin.Default()
+	g := r.Group("/api/v1")
+	vehicleController.NewRouter(g, v_svc)
 
 	r.Run(config.C.Bind) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

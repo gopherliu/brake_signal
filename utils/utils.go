@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/hex"
+
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -9,5 +11,8 @@ func GenerateKeyPair() (private string, public string, err error) {
 	if err != nil {
 		return "", "", err
 	}
-	return string(crypto.FromECDSA(privKey)), string(crypto.FromECDSAPub(&privKey.PublicKey)), nil
+
+	return hex.EncodeToString(crypto.FromECDSA(privKey)),
+		hex.EncodeToString(crypto.FromECDSAPub(&privKey.PublicKey)),
+		nil
 }

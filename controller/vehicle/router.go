@@ -6,9 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(r *gin.Engine, vehicleService *service.VehicleService) *gin.RouterGroup {
+func NewRouter(r *gin.RouterGroup, vehicleService *service.VehicleService) {
 	handlers := NewHandlers(vehicleService)
-	r.POST("/api/v1/pairs/:vin", handlers.GenerateAddressPairs)
-	g := r.Group("/api/v1")
-	return g
+	r.GET("/pairs/:vin", handlers.GenerateAddressPairs)
 }
