@@ -1,5 +1,0 @@
-{
-    "redis_addr":"localhost:6379",
-    "redis_auth":"",
-    "bind": ":8080"
-}
