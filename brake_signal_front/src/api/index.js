@@ -9,4 +9,4 @@ const fetch = axios.create({
 
 export const reqFetchBindCar = (vin) => fetch.get(`/api/v1/pairs/${vin}`)
 export const reqPutOnChain = (data) => fetch.post('/api/v1/onChain', data)
-export const reqFetchOnChainInfo = (params) => fetch.get('/api/v1/getOnChainInfo', params)
+export const reqFetchOnChainInfo = (vin) => fetch.get(`/api/v1/getOnChainInfo/${vin}`)
