@@ -126,5 +126,5 @@ func (h *Handlers) GetWaitingOnChainInfo(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, "", signal_hash)
+	c.JSON(http.StatusOK, controller.NewResult(signal_hash, nil))
 }
