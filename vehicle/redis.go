@@ -7,6 +7,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	SIGNAL_SORTED_SET_PRE = "SIGNAL_SORTED_SET_PRE"
+)
+
 type Redis struct {
 	client *redis.Client
 }
@@ -27,13 +31,13 @@ func (r *Redis) Get(ctx context.Context, vin string) (*Vehicle, error) {
 	return v, err
 }
 
-func (r *Redis) StoreSignal(ctx context.Context, vin string, time_stamp int64) error {
-	return r.client.ZAdd(ctx, vin, redis.Z{
-		Score:  float64(time_stamp),
-		Member: fmt.Sprintf("%d", time_stamp),
+func (r *Redis) StoreSignal(ctx context.Context, key string, value int64) error {
+	return r.client.ZAdd(ctx, key, redis.Z{
+		Score:  float64(value),
+		Member: fmt.Sprintf("%d", value),
 	}).Err()
 }
 
-func (r *Redis) GetSignal(ctx context.Context, vin string) ([]string, error) {
-	return r.client.ZRange(ctx, vin, 0, -1).Result()
+func (r *Redis) GetSignal(ctx context.Context, key string) ([]string, error) {
+	return r.client.ZRange(ctx, key, 0, -1).Result()
 }

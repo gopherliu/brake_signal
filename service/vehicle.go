@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -10,6 +11,10 @@ import (
 
 	"brake_signal/utils"
 	"brake_signal/vehicle"
+)
+
+const (
+	BRAKE_SIGNAL_SORTED_SET_PRE = "BRAKE_SIGNAL_SORTED_SET_PRE"
 )
 
 type VehicleService struct {
@@ -51,23 +56,44 @@ func (s *VehicleService) OnChain(ctx context.Context, vin string, time_stamp int
 		return "", "", errors.New("invalid time stamp nano")
 	}
 
-	err := s.vehicleDB.StoreSignal(ctx, vin, time_stamp)
+	err := s.vehicleDB.StoreSignal(ctx, fmt.Sprintf("%s:%s", BRAKE_SIGNAL_SORTED_SET_PRE, vin), time_stamp)
 	if err != nil {
 		log.Errorf("VehicleService::OnChain, StoreSignal error:[%v], vin:[%v]", err, vin)
 		return "", "", err
 	}
 
-	signals, err := s.vehicleDB.GetSignal(ctx, vin)
+	signal_string, signal_hash, err := s.getOnChainInfo(ctx, vin)
 	if err != nil {
-		log.Errorf("VehicleService::OnChain, GetSignal error:[%v], vin:[%v]", err, vin)
+		log.Errorf("VehicleService::OnChain, getOnChainInfo error:[%v], vin:[%v]", err, vin)
+		return "", "", err
+	}
+
+	// TODO::上链
+	return signal_string, signal_hash, err
+}
+
+func (s *VehicleService) OnChainWaitingInfo(ctx context.Context, vin string) (string, error) {
+	_, signal_hash, err := s.getOnChainInfo(ctx, vin)
+	if err != nil {
+		log.Errorf("VehicleService::OnChainWaitingInfo, getOnChainInfo error:[%v], vin:[%v]", err, vin)
+		return "", err
+	}
+
+	// TODO::上链
+	return signal_hash, err
+}
+
+func (s *VehicleService) getOnChainInfo(ctx context.Context, vin string) (string, string, error) {
+	signals, err := s.vehicleDB.GetSignal(ctx, fmt.Sprintf("%s:%s", BRAKE_SIGNAL_SORTED_SET_PRE, vin))
+	if err != nil {
+		log.Errorf("VehicleService::getOnChainInfo, GetSignal error:[%v], vin:[%v]", err, vin)
 		return "", "", err
 	}
 
 	signal_string := strings.Join(signals, ",")
-	log.Infof("VehicleService::OnChain, signal_string:[%v]", signal_string)
+	log.Infof("VehicleService::getOnChainInfo, signal_string:[%v]", signal_string)
 	signal_hash := utils.GenerateHash256(signal_string)
-	log.Infof("VehicleService::OnChain, signal_hash:[%v]", signal_hash)
+	log.Infof("VehicleService::getOnChainInfo, signal_hash:[%v]", signal_hash)
 
-	// TODO::上链
-	return signal_string, signal_hash, err
+	return signal_string, signal_hash, nil
 }
