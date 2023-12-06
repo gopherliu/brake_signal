@@ -111,3 +111,20 @@ func (h *Handlers) GetVehicleSignalChainInfo(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, controller.NewResult(signal, nil))
 }
+
+func (h *Handlers) GetWaitingOnChainInfo(c *gin.Context) {
+	vin := c.Param("vin")
+	if vin == "" {
+		log.Error("handlers::GetWaitingOnChainInfo, params error: nil vin")
+		c.JSON(http.StatusBadRequest, controller.NewResult(nil, errors.New("empty vin")))
+		return
+	}
+	signal_hash, err := h.vehicleService.OnChainWaitingInfo(c, vin)
+	if err != nil {
+		log.Errorf("handlers::GetWaitingOnChainInfo, ParseInt error:[%v], vin:[%v]", err, vin)
+		c.JSON(http.StatusInternalServerError, controller.NewResult(nil, err))
+		return
+	}
+
+	c.String(http.StatusOK, "", signal_hash)
+}
