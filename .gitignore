@@ -18,3 +18,5 @@ static/
 brake_signal
 .idea/
 /.DS_Store
+config/*.json
+restart.sh
