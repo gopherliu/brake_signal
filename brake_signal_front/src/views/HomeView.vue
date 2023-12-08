@@ -19,7 +19,7 @@ const onChainedInfo = reactive({
   create_at: '-',
   update_at: '-'
 })
-const onChainStatus = ref('processing')
+// const onChainStatus = ref('processing')
 const bindCarAddressHandle = async () => {
   if (!carVin.value.trim()) {
     alert('plase input car vin')
@@ -82,7 +82,7 @@ const getOnChainInfo = async (vin) => {
       <p>vin: {{ carAddress.vin }}</p>
       <p>address: {{ carAddress.public_key }}</p>
       <p>signal hash: {{ onChainInfo.signal_hash }}</p>
-      <p>status: {{ onChainStatus }}</p>
+      <p>status: {{ onChainInfo.status }}</p>
       <p>last on chain block: {{ onChainedInfo.last_on_chain_block }}</p>
       <p>last on chain hash: {{ onChainedInfo.last_on_chain_hash }}</p>
       <p>last on chain info: {{ onChainedInfo.last_on_chain_info }}</p>
