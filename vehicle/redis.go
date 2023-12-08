@@ -7,10 +7,6 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-const (
-	SIGNAL_SORTED_SET_PRE = "SIGNAL_SORTED_SET_PRE"
-)
-
 type Redis struct {
 	client *redis.Client
 }

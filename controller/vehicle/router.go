@@ -18,4 +18,5 @@ func NewRouter(r *gin.RouterGroup, vehicleService *service.VehicleService) {
 	r.GET("/pairs/:vin", handlers.GenerateAddressPairs)
 	r.POST("/onChain", handlers.VehicleSignalOnChain)
 	r.GET("/getOnChainInfo/:vin", handlers.GetVehicleSignalChainInfo)
+	r.GET("/getWaitingOnChainInfo/:vin", handlers.GetWaitingOnChainInfo)
 }
